@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  nodejs-app:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: A4node
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    tty: true
+
+  mysql:
+    image: mysql:5.7
+    platform: linux/x86_64
+    container_name: sq1
+    volumes:
+      - ./dbfiles:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+
+  react-app: # Add the React service
+    build: 
+      context: ./frontend  # Specify the directory where Dockerfile is located
+      dockerfile: Dockerfile  # Name of the Dockerfile (if different)
+    container_name: react-app-container
+    ports:
+      - "3000:3000" # Expose React app on port 80
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - nodejs-app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    tty: true
+    stdin_open: true
