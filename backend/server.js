@@ -4,14 +4,30 @@ const cors = require('cors');
 const PostController = require('./controllers/postController');
 const CommentController = require('./controllers/commentController');
 const ChannelController = require('./controllers/channelController');
+const UserController = require("./controllers/userController");
 
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 const port = 5000;
 
+// image storage
+app.use('/uploads', express.static('uploads'));
+
+// Users
+app.get('/initUsers', UserController.initializeDatabase);
+
+app.get('/getUsers', UserController.getAllUsers);
+
+app.post('/addUser', UserController.createUser);
+
+app.post('/addAdmin', UserController.createAdminUser);
+
+app.get('/login', UserController.getUser);
+
+app.put('/removeUser', UserController.removeUser);
 
 // channels
 // Initialize Database

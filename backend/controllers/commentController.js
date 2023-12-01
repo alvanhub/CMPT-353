@@ -1,23 +1,57 @@
+const bodyParser = require('body-parser');
 const CommentModel = require('../models/commentModel');
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/'); // Destination folder for uploaded files
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname); // Keeping the original filename
+    }
+  });
+
+const upload = multer({ storage: storage }).single('image'); 
+
 
 class CommentController {
     static initializeDatabase(req, res) {
         CommentModel.createTable();
-        res.status(200).json({ message: 'Database removed successfully.' });
+        res.status(200).json({ message: 'Database created successfully.' });
     }
 
     static addComment(req, res) {
-        const { text, postId } = req.query;
-        
+        upload(req, res, function (err) {
+            if (err instanceof multer.MulterError) {
+              return res.status(500).json({ error: 'Error uploading file' });
+            } else if (err) {
+              return res.status(500).json({ error: 'Something went wrong' });
+            }
 
-        if (!text || !postId) {
-            return res.status(400).json({ error: 'Text or postId not provided' });
-        }
+            const { text, postId} = req.query;
+            
+            
+            //console.log(image);
+            if (!text || !postId) {
+                return res.status(400).json({ error: 'Text or postId not provided' });
+            }
 
-        CommentModel.addComment(text, postId, (error, result) => {
-            if (error) return res.status(500).json({ error: 'Error adding comment' });
-            return res.status(200).json({ status: 'ok' });
+
+            if (req.file){
+                const image = req.file.filename;
+                
+                CommentModel.addCommentWimage(text, postId, image,(error, result) => {
+                    if (error) return res.status(500).json({ error: 'Error adding comment' });
+                    return res.status(200).json({ status: 'ok' });
+                });
+            }else{
+                CommentModel.addComment(text, postId, (error, result) => {
+                    if (error) return res.status(500).json({ error: 'Error adding comment' });
+                    return res.status(200).json({ status: 'ok' });
+                });
+            }
         });
+
     }
 
     static getAllComments(req, res) {

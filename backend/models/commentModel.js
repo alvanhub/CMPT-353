@@ -17,6 +17,7 @@ class CommentModel {
         const query = `CREATE TABLE IF NOT EXISTS comments (
             id int unsigned NOT NULL auto_increment,
             text varchar(250) NOT NULL,
+            image varchar(250) DEFAULT NULL,
             postId int unsigned,  
             PRIMARY KEY (id),
             FOREIGN KEY (postId) REFERENCES posts(id)
@@ -34,6 +35,14 @@ class CommentModel {
     static addComment(text, postId, callback) {
         const query = `INSERT INTO comments (text, postId) VALUES (?, ?)`;
         connection.query(query, [text, postId], (error, commentResult) => {
+            if (error) return callback(error, null);
+            return callback(null, { comment: commentResult});
+        });
+    }
+
+    static addCommentWimage(text, postId, image, callback) {
+        const query = `INSERT INTO comments (text, postId, image) VALUES (?, ?, ?)`;
+        connection.query(query, [text, postId, image], (error, commentResult) => {
             if (error) return callback(error, null);
             return callback(null, { comment: commentResult});
         });

@@ -5,6 +5,7 @@ import './styles.css'; // Import your CSS file for styling
 
 import CreatePost from './CreatePost';
 import CreateComment from './CreateComment';
+import CreateChannel from './CreateChannel';
 
 const AllPosts = () => {
   const [posts, setPosts] = useState([]);
@@ -87,7 +88,7 @@ const AllPosts = () => {
                 ))}
                 </div>
               </div>
-              <CreateComment postId={postId} />
+              <CreateChannel />
           </div>
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
               <div>
@@ -103,6 +104,9 @@ const AllPosts = () => {
                           <p>Post ID: {post.id}</p>
                           <p>Topic: {post.topic}</p>
                           <p>Data: {post.data}</p>
+                          {post.image && (
+                            <img src={`http://localhost:5000/uploads/${post.image}`} alt="post Image" style={{ width: '200px', height: '150px' }}/>
+                          )}
                           <button onClick={() => fetchComments(post.id)}>See Replies</button>
                           </div>
                       ))}
@@ -120,6 +124,10 @@ const AllPosts = () => {
                 <div className="post-box" key={comment.id}>
                   <p>Comment ID: {comment.id}</p>
                   <p>Content: {comment.text}</p>
+                  
+                  {comment.image && (
+                    <img src={`http://localhost:5000/uploads/${comment.image}`} alt="Comment Image" style={{ width: '200px', height: '150px' }}/>
+                  )}
                 </div>
               ))}
               </div>

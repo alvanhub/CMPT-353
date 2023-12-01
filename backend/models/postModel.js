@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const CommentModel = require('./commentModel');
+const multer = require('multer');
 
 /// This database model serves as the messages in each channel
 const connection = mysql.createConnection({
@@ -30,6 +31,7 @@ class PostModel {
             channel_id int unsigned,
             topic varchar(250) NOT NULL,
             data varchar(250) NOT NULL,
+            image varchar(250) DEFAULT NULL,
             PRIMARY KEY (id),
             FOREIGN KEY (channel_id) REFERENCES channels(id)
         )`;
@@ -45,6 +47,17 @@ class PostModel {
     static addPost(topic, data, channel_id, callback) {
         const query = `INSERT INTO posts (topic, data, channel_id) VALUES (?, ?, ?)`;
         connection.query(query, [topic, data, channel_id], (error, postResult) => {
+            if (error) return callback(error, null);
+
+            CommentModel.createTable(); // Ensure comments table exists
+            return callback(null, { post: postResult});
+
+        });
+    }
+
+    static addPostWImage(topic, data, image, channel_id, callback) {
+        const query = `INSERT INTO posts (topic, data, image, channel_id) VALUES (?, ?, ?, ?)`;
+        connection.query(query, [topic, data, image, channel_id], (error, postResult) => {
             if (error) return callback(error, null);
 
             CommentModel.createTable(); // Ensure comments table exists

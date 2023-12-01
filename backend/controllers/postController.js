@@ -1,4 +1,17 @@
 const PostModel = require('../models/postModel');
+const multer = require('multer');
+
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/'); // Destination folder for uploaded files
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname); // Keeping the original filename
+    }
+  });
+
+const upload = multer({ storage: storage }).single('image'); 
 
 class PostController {
     static alterDatabase(req, res) {
@@ -17,15 +30,33 @@ class PostController {
     }
 
     static addPost(req, res) {
-        const { topic, data, channel_id } = req.query;
+        upload(req, res, function (err) {
+            if (err instanceof multer.MulterError) {
+              return res.status(500).json({ error: 'Error uploading file' });
+            } else if (err) {
+              return res.status(500).json({ error: 'Something went wrong' });
+            }
+            const { topic, data, channel_id } = req.query;
+            
 
-        if (!topic || !data || !channel_id) {
-            return res.status(400).json({ error: 'Topic, data, or channel Id not provided' });
-        }
+            if (!topic || !data || !channel_id) {
+                return res.status(400).json({ error: 'Topic, data, or channel Id not provided' });
+            }
 
-        PostModel.addPost(topic, data, channel_id, (error, result) => {
-            if (error) return res.status(500).json({ error: 'Error adding post' });
-            return res.status(200).json({ status: 'ok' });
+            if (req.file){
+                const image = req.file.filename;
+
+                console.log(image);
+                PostModel.addPostWImage(topic, data, image, channel_id, (error, result) => {
+                    if (error) return res.status(500).json({ error: 'Error adding post with image' });
+                    return res.status(200).json({ status: 'ok' });
+                });
+            }else{
+                PostModel.addPost(topic, data, channel_id, (error, result) => {
+                    if (error) return res.status(500).json({ error: 'Error adding post' });
+                    return res.status(200).json({ status: 'ok' });
+                });
+            }
         });
     }
 
