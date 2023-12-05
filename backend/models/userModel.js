@@ -27,11 +27,27 @@ class UserModel {
     }
   
     static createUser(name, password, callback) {
-      const query = `INSERT INTO users (name, password) VALUES (?, ?)`;
-      connection.query(query, [name, password], (error, userResult) => {
-        if (error) return callback(error, null);
-        return callback(null, { user: userResult });
-      });
+      const checkQuery = `SELECT * FROM users WHERE name = ?`;
+    connection.query(checkQuery, [name], (checkError, checkResults) => {
+        if (checkError) {
+            return callback(checkError, null);
+        }
+
+        if (checkResults && checkResults.length > 0) {
+            // If the name already exists, return an error
+            const error = new Error('User with this name already exists');
+            return callback(error, null);
+        } else {
+            // If the name doesn't exist, proceed with creating the user
+            const insertQuery = `INSERT INTO users (name, password) VALUES (?, ?)`;
+            connection.query(insertQuery, [name, password], (insertError, userResult) => {
+                if (insertError) {
+                    return callback(insertError, null);
+                }
+                return callback(null, { user: userResult });
+            });
+        }
+    });
     }
   
     static createAdminUser(name, password, callback) {
@@ -42,9 +58,9 @@ class UserModel {
         });
     }
   
-    static removeUser(userId, callback) {
-      const query = `DELETE FROM users WHERE id = ?`;
-      connection.query(query, [userId], (error, result) => {
+    static removeUser(name, callback) {
+      const query = `DELETE FROM users WHERE name = ?`;
+      connection.query(query, [name], (error, result) => {
         if (error) return callback(error, null);
         return callback(null, { message: 'User deleted successfully' });
       });
@@ -62,9 +78,27 @@ class UserModel {
         const query = `SELECT * FROM users WHERE name = ? AND password = ?`;
         connection.query(query, [name, password], (error, results) => {
             if (error) return callback(error, null);
-            return callback(null, results);
+            if (results.length > 0)
+            {
+              return callback(null, results);
+            }else{
+              return callback("email does not exist", null);
+            }
         });
     }
+
+    static getUserById(id, callback) {
+      const query = `SELECT * FROM users WHERE id = ?`;
+      connection.query(query, [id], (error, results) => {
+          if (error) return callback(error, null);
+          if (results.length > 0)
+          {
+            return callback(null, results);
+          }else{
+            return callback("email does not exist", null);
+          }
+      });
+  }
 }
 
 module.exports = UserModel;

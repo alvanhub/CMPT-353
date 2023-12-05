@@ -10,7 +10,9 @@ const CreateChannel = () => {
 
 
     try {
-      const response = await axios.post(`http://localhost:5000/addChannel?topic=${topic}`, );
+      const user = JSON.parse(localStorage.getItem("token"));
+      //console.log(user);
+      const response = await axios.post(`http://localhost:5000/addChannel?topic=${topic}&userName=${user.name}`, );
       if (response.status === 200) {
         //const data = await response.json();
         //console.log(data.comments)

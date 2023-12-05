@@ -28,11 +28,11 @@ class CommentController {
               return res.status(500).json({ error: 'Something went wrong' });
             }
 
-            const { text, postId} = req.query;
+            const { text, postId, userName, parentId} = req.query;
             
             
             //console.log(image);
-            if (!text || !postId) {
+            if (!text || !postId || !userName) {
                 return res.status(400).json({ error: 'Text or postId not provided' });
             }
 
@@ -40,13 +40,13 @@ class CommentController {
             if (req.file){
                 const image = req.file.filename;
                 
-                CommentModel.addCommentWimage(text, postId, image,(error, result) => {
+                CommentModel.addCommentWimage(text, postId, image, userName, parentId, (error, result) => {
                     if (error) return res.status(500).json({ error: 'Error adding comment' });
                     return res.status(200).json({ status: 'ok' });
                 });
             }else{
-                CommentModel.addComment(text, postId, (error, result) => {
-                    if (error) return res.status(500).json({ error: 'Error adding comment' });
+                CommentModel.addComment(text, postId, userName, parentId, (error, result) => {
+                    if (error) return res.status(500).json({ error: error });
                     return res.status(200).json({ status: 'ok' });
                 });
             }
@@ -63,6 +63,45 @@ class CommentController {
 
         CommentModel.getAllComments(postId, (error, results) => {
             if (error) return res.status(500).json({ error: 'Error fetching comments' });
+            return res.status(200).json({ comments: results });
+        });
+    }
+
+    static getChildrenComments(req, res) {
+        const {postId} = req.query;
+
+        if (!postId) {
+            return res.status(400).json({ error: 'postId not provided' });
+        }
+
+        CommentModel.getChildrenComments(postId, (error, results) => {
+            if (error) return res.status(500).json({ error: 'Error fetching comments' });
+            return res.status(200).json({ comments: results });
+        });
+    }
+
+    static getRecursiveComments(req, res) {
+        const {parentId, id} = req.query;
+
+        if (!parentId || !id) {
+            return res.status(400).json({ error: 'parentId not provided' });
+        }
+
+        CommentModel.getRecursiveComments(parentId, id, (error, results) => {
+            if (error) return res.status(500).json({ error: 'Error fetching comments' });
+            return res.status(200).json({ comments: results });
+        });
+    }
+
+    static removeComment(req, res) {
+        const {id} = req.query;
+
+        if (!id) {
+            return res.status(400).json({ error: 'id not provided' });
+        }
+
+        CommentModel.removeComment(id, (error, results) => {
+            if (error) return res.status(500).json({ error: 'Error removing comment' });
             return res.status(200).json({ comments: results });
         });
     }

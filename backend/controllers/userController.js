@@ -33,9 +33,10 @@ class UserController {
   }
 
   static removeUser(req, res) {
-    const { userId } = req.params;
+    const { name } = req.query;
 
-    UserModel.removeUser(userId, (error, result) => {
+    //console.log(name);
+    UserModel.removeUser(name, (error, result) => {
       if (error) return res.status(500).json({ error: 'Error removing user' });
       return res.status(200).json({ status: 'User removed successfully' });
     });
@@ -57,6 +58,19 @@ class UserController {
 
     UserModel.getUser(name, password, (error, users) => {
       if (error) return res.status(500).json({ error: 'Error fetching users' });
+      return res.status(200).json({ users });
+    });
+  }
+
+  static getUserById(req, res) {
+    const { id } = req.query;
+
+    if (!id) {
+        return res.status(400).json({ error: 'Name or password not provided' });
+      }
+
+    UserModel.getUserById(id, (error, users) => {
+      if (error) return res.status(500).json({ error: 'Error fetching user' });
       return res.status(200).json({ users });
     });
   }

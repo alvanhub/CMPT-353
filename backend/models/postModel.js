@@ -29,6 +29,7 @@ class PostModel {
         const postQuery = `CREATE TABLE IF NOT EXISTS posts (
             id int unsigned NOT NULL auto_increment,
             channel_id int unsigned,
+            userName varchar(100) NOT NULL,
             topic varchar(250) NOT NULL,
             data varchar(250) NOT NULL,
             image varchar(250) DEFAULT NULL,
@@ -44,9 +45,9 @@ class PostModel {
 
     }
 
-    static addPost(topic, data, channel_id, callback) {
-        const query = `INSERT INTO posts (topic, data, channel_id) VALUES (?, ?, ?)`;
-        connection.query(query, [topic, data, channel_id], (error, postResult) => {
+    static addPost(topic, data, channel_id, userName, callback) {
+        const query = `INSERT INTO posts (topic, data, channel_id, userName) VALUES (?, ?, ?, ?)`;
+        connection.query(query, [topic, data, channel_id, userName], (error, postResult) => {
             if (error) return callback(error, null);
 
             CommentModel.createTable(); // Ensure comments table exists
@@ -55,9 +56,9 @@ class PostModel {
         });
     }
 
-    static addPostWImage(topic, data, image, channel_id, callback) {
-        const query = `INSERT INTO posts (topic, data, image, channel_id) VALUES (?, ?, ?, ?)`;
-        connection.query(query, [topic, data, image, channel_id], (error, postResult) => {
+    static addPostWImage(topic, data, image, channel_id, userName, callback) {
+        const query = `INSERT INTO posts (topic, data, image, channel_id, userName) VALUES (?, ?, ?, ?, ?)`;
+        connection.query(query, [topic, data, image, channel_id, userName], (error, postResult) => {
             if (error) return callback(error, null);
 
             CommentModel.createTable(); // Ensure comments table exists
@@ -79,6 +80,14 @@ class PostModel {
         connection.query(query, [channel_id],(error, results) => {
             if (error) return callback(error, null);
             return callback(null, results);
+        });
+    }
+
+    static removePost(id, callback) {
+        const query = `DELETE FROM posts WHERE id = ?`;
+        connection.query(query, [id], (error, commentResult) => {
+            if (error) return callback(error, null);
+            return callback(null, { message: "post deleted"});
         });
     }
 }

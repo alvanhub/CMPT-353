@@ -13,6 +13,9 @@ const LandingPage = () => {
       <Link to="/all-posts">
         <button>Go to All Posts</button>
       </Link>
+      <Link to="/search">
+        <button>Go to Content Search</button>
+      </Link>
       <button onClick={handleLogout}>
           Logout
       </button>

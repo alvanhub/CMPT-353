@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
@@ -13,8 +14,8 @@ const Login = () => {
 
       if (response.status === 200) {
         // Login successful, perform actions like redirecting or setting tokens in localStorage
-        localStorage.setItem("token", response);
-        console.log('Login successful!');
+        localStorage.setItem("token", JSON.stringify(response.data.users[0]));
+        console.log(response.data.users[0]);
         window.location = "/";
         setUsername('');
         setPassword('');
@@ -22,7 +23,7 @@ const Login = () => {
         console.log('Login failed.');
       }
     } catch (error) {
-      console.error('Error logging in:', error);
+      alert('Incorrect Username or Password');
     }
   };
 
@@ -49,6 +50,9 @@ const Login = () => {
         </label>
         <br />
         <button type="submit">Login</button>
+        <Link to="/signup">
+        <button>Go to Signup</button>
+        </Link>
       </form>
     </div>
   );

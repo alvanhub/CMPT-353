@@ -21,6 +21,8 @@ app.get('/initUsers', UserController.initializeDatabase);
 
 app.get('/getUsers', UserController.getAllUsers);
 
+app.get('/getUserById', UserController.getUserById);
+
 app.post('/addUser', UserController.createUser);
 
 app.post('/addAdmin', UserController.createAdminUser);
@@ -33,10 +35,13 @@ app.put('/removeUser', UserController.removeUser);
 // Initialize Database
 app.get('/initChannel', ChannelController.initializeDatabase);
 
-// Add a Post
+// Add a channel
 app.post('/addChannel', ChannelController.addChannel);
 
-// Get all Posts
+// Remove a channel
+app.put('/removeChannel', ChannelController.removeChannel);
+
+// Get all channel
 app.get('/getChannels', ChannelController.getAllChannels);
 
 
@@ -47,6 +52,9 @@ app.get('/initPost', PostController.initializeDatabase);
 
 // Add a Post
 app.post('/addPost', PostController.addPost);
+
+// remove a Post
+app.put('/removePost', PostController.removePost);
 
 // Get all Posts
 app.get('/getposts', PostController.getAllPosts);
@@ -64,6 +72,15 @@ app.post('/addComment', CommentController.addComment);
 
 // get all comments
 app.get('/getComments', CommentController.getAllComments);
+
+// get child comments
+app.get('/getChildComments', CommentController.getChildrenComments);
+
+// get recursive child comments
+app.get('/getRecursiveComments', CommentController.getRecursiveComments);
+
+// remove a comment
+app.put('/removeComment', CommentController.removeComment);
 
 
 

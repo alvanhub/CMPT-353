@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles.css'; 
 import imageCompression from 'browser-image-compression';
 import axios from 'axios';
 
-const CreateComment = (postId) => {
+const CreateComment = ({postId, parent, setParent}) => {
   const [text, setText] = useState('');
   const [image, setImage] = useState(null);
 
@@ -17,11 +17,19 @@ const CreateComment = (postId) => {
 
     //console.log(postId);
     try {
-      const response = await axios.post(`http://localhost:5000/addComment?text=${text}&postId=${postId.postId}`,formData)
+      const user = JSON.parse(localStorage.getItem("token"));
+      let url;
+      if (parent.id){
+        url = `http://localhost:5000/addComment?text=${text}&postId=${postId}&userName=${user.name}&parentId=${parent.id}`;
+      }else {
+        url = `http://localhost:5000/addComment?text=${text}&postId=${postId}&userName=${user.name}`;
+      }
+      const response = await axios.post(url,formData)
       if (response.status === 200) {
         //const data = await response.json();
         //console.log(data.comments)
         //console.log(data);
+        setParent({});
         setText('');
         setImage(null);
       }
@@ -31,6 +39,10 @@ const CreateComment = (postId) => {
 
   };
 
+  useEffect(() => {
+    // console.log(parent);
+  });
+
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     //console.log(e.target.files[0]);
@@ -39,7 +51,8 @@ const CreateComment = (postId) => {
 
   return (
     <div>
-      <h2>Add a Comment/Reply</h2>
+      <h2>Add a Comment</h2>
+      {parent && <div>replying to {parent.userName}</div>}
       <form onSubmit={handleSubmit}>
         <label>
           Message
@@ -53,6 +66,7 @@ const CreateComment = (postId) => {
           Image:
           <input
             type="file"
+            value={image}
             onChange={(e) => handleImageChange(e)}
           />
         </label>

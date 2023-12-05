@@ -13,22 +13,25 @@ connection.connect();
 
 class ChannelModel{
     static createTable() {
-        const postQuery = `CREATE TABLE IF NOT EXISTS channels (
+        const channelQuery = `CREATE TABLE IF NOT EXISTS channels (
             id int unsigned NOT NULL auto_increment,
             topic varchar(250) NOT NULL,
+            userName varchar(100) NOT NULL,
             PRIMARY KEY (id)
         )`;
 
+        // const channelQuery = `DROP TABLE IF EXISTS channels;`
+
         // Create the posts table
-        connection.query(postQuery, (error, result) => {
+        connection.query(channelQuery, (error, result) => {
             if (error) throw error;
         });
 
     }
 
-    static addChannel(topic, callback) {
-        const query = `INSERT INTO channels (topic) VALUE (?)`;
-        connection.query(query, [topic], (error, channelResult) => {
+    static addChannel(topic, userName, callback) {
+        const query = `INSERT INTO channels (topic, userName) VALUE (?, ?)`;
+        connection.query(query, [topic, userName], (error, channelResult) => {
             if (error) return callback(error, null);
 
             PostModel.createTable(); // Ensure post table exists
@@ -42,6 +45,14 @@ class ChannelModel{
         connection.query(query, (error, results) => {
             if (error) return callback(error, null);
             return callback(null, results);
+        });
+    }
+
+    static removeChannel(id, callback) {
+        const query = `DELETE FROM channels WHERE id = ?`;
+        connection.query(query, [id], (error, commentResult) => {
+            if (error) return callback(error, null);
+            return callback(null, { message: "channel deleted"});
         });
     }
 }

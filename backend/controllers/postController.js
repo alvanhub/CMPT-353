@@ -36,10 +36,10 @@ class PostController {
             } else if (err) {
               return res.status(500).json({ error: 'Something went wrong' });
             }
-            const { topic, data, channel_id } = req.query;
+            const { topic, data, channel_id, userName } = req.query;
             
 
-            if (!topic || !data || !channel_id) {
+            if (!topic || !data || !channel_id || !userName) {
                 return res.status(400).json({ error: 'Topic, data, or channel Id not provided' });
             }
 
@@ -47,12 +47,12 @@ class PostController {
                 const image = req.file.filename;
 
                 console.log(image);
-                PostModel.addPostWImage(topic, data, image, channel_id, (error, result) => {
+                PostModel.addPostWImage(topic, data, image, channel_id, userName, (error, result) => {
                     if (error) return res.status(500).json({ error: 'Error adding post with image' });
                     return res.status(200).json({ status: 'ok' });
                 });
             }else{
-                PostModel.addPost(topic, data, channel_id, (error, result) => {
+                PostModel.addPost(topic, data, channel_id, userName, (error, result) => {
                     if (error) return res.status(500).json({ error: 'Error adding post' });
                     return res.status(200).json({ status: 'ok' });
                 });
@@ -76,6 +76,19 @@ class PostController {
         PostModel.getChannelPosts(channel_id, (error, results) => {
             if (error) return res.status(500).json({ error: 'Error fetching posts' });
             return res.status(200).json({ posts: results });
+        });
+    }
+
+    static removePost(req, res) {
+        const {id} = req.query;
+
+        if (!id) {
+            return res.status(400).json({ error: 'id not provided' });
+        }
+
+        PostModel.removePost(id, (error, results) => {
+            if (error) return res.status(500).json({ error: 'Error removing post' });
+            return res.status(200).json({ message: results });
         });
     }
 }

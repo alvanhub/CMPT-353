@@ -17,7 +17,8 @@ const CreatePost = (channelId) => {
 
     //console.log(channelId.channelId);
     try {
-      const response = await axios.post(`http://localhost:5000/addPost?topic=${topic}&data=${data}&channel_id=${channelId.channelId}`, formData);
+      const user = JSON.parse(localStorage.getItem("token"));
+      const response = await axios.post(`http://localhost:5000/addPost?topic=${topic}&data=${data}&channel_id=${channelId.channelId}&userName=${user.name}`, formData);
       if (response.status === 200) {
         //const data = await response.json();
         //console.log(data.comments)
@@ -38,33 +39,33 @@ const CreatePost = (channelId) => {
   };
 
   return (
-    <div>
+    <div >
       <h2>Add a Post</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
+      <form style={{display: 'flex'}} onSubmit={handleSubmit}>
+        <div><label>
           Topic
           <input
             type="text"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
           />
-        </label>
-        <label>
+        </label></div>
+        <div><label>
           Message
           <input
             type="text"
             value={data}
             onChange={(e) => setData(e.target.value)}
           />
-        </label>
-        <label>
+        </label></div>
+        <div><label>
           Image:
           <input
             type="file"
             onChange={(e) => handleImageChange(e)}
           />
         </label>
-        <button type="submit">Send</button>
+        <button type="submit">Send</button></div>
       </form>
     </div>
   );
