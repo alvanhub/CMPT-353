@@ -91,6 +91,18 @@ class PostController {
             return res.status(200).json({ message: results });
         });
     }
+
+    static getUserPosts(req, res) {
+        const {userName} = req.query;
+
+        if (!userName) {
+            return res.status(400).json({ error: 'userName not provided' });
+        }
+        PostModel.getUserPosts(userName, (error, results) => {
+            if (error) return res.status(500).json({ error: 'Error fetching posts' });
+            return res.status(200).json({ posts: results });
+        });
+    }
 }
 
 module.exports = PostController;

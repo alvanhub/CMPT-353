@@ -38,6 +38,18 @@ class ChannelController {
             return res.status(200).json({ message: results });
         });
     }
+
+    static getUserChannels(req, res) {
+        const {userName} = req.query;
+
+        if (!userName) {
+            return res.status(400).json({ error: 'userName not provided' });
+        }
+        ChannelModel.getUserChannels(userName, (error, results) => {
+            if (error) return res.status(500).json({ error: 'Error fetching channel' });
+            return res.status(200).json({ channels: results });
+        });
+    }
 }
 
 module.exports = ChannelController;

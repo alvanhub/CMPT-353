@@ -90,6 +90,14 @@ class PostModel {
             return callback(null, { message: "post deleted"});
         });
     }
+
+    static getUserPosts(userName, callback) {
+        const query = `SELECT * FROM posts WHERE userName = ?`;
+        connection.query(query, [userName],(error, results) => {
+            if (error) return callback(error, null);
+            return callback(null, results);
+        });
+    }
 }
 
 module.exports = PostModel;

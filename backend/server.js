@@ -44,6 +44,9 @@ app.put('/removeChannel', ChannelController.removeChannel);
 // Get all channel
 app.get('/getChannels', ChannelController.getAllChannels);
 
+// Get user channel
+app.get('/getUserChannels', ChannelController.getUserChannels);
+
 
 
 // posts
@@ -59,6 +62,9 @@ app.put('/removePost', PostController.removePost);
 // Get all Posts
 app.get('/getposts', PostController.getAllPosts);
 
+// Get user Posts
+app.get('/getUserPosts', PostController.getUserPosts);
+
 // Get specific channel posts
 app.get('/getChannelPosts', PostController.getChannelPosts);
 
@@ -72,6 +78,9 @@ app.post('/addComment', CommentController.addComment);
 
 // get all comments
 app.get('/getComments', CommentController.getAllComments);
+
+// get user comments
+app.get('/getUserComments', CommentController.getUserComments);
 
 // get child comments
 app.get('/getChildComments', CommentController.getChildrenComments);

@@ -55,13 +55,13 @@ class CommentController {
     }
 
     static getAllComments(req, res) {
-        const {postId} = req.query;
+        // const {postId} = req.query;
 
-        if (!postId) {
-            return res.status(400).json({ error: 'PostId not provided' });
-        }
+        // if (!postId) {
+        //     return res.status(400).json({ error: 'PostId not provided' });
+        // }
 
-        CommentModel.getAllComments(postId, (error, results) => {
+        CommentModel.getAllComments((error, results) => {
             if (error) return res.status(500).json({ error: 'Error fetching comments' });
             return res.status(200).json({ comments: results });
         });
@@ -102,6 +102,19 @@ class CommentController {
 
         CommentModel.removeComment(id, (error, results) => {
             if (error) return res.status(500).json({ error: 'Error removing comment' });
+            return res.status(200).json({ comments: results });
+        });
+    }
+
+    static getUserComments(req, res) {
+        const {userName} = req.query;
+
+        if (!userName) {
+            return res.status(400).json({ error: 'userName not provided' });
+        }
+
+        CommentModel.getUserComments(userName, (error, results) => {
+            if (error) return res.status(500).json({ error: 'Error fetching comments' });
             return res.status(200).json({ comments: results });
         });
     }

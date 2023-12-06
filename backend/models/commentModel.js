@@ -51,9 +51,9 @@ class CommentModel {
         });
     }
 
-    static getAllComments(postId, callback) {
-        const query = `SELECT * FROM comments WHERE postId = ?`;
-        connection.query(query, [postId], (error, results) => {
+    static getAllComments(callback) {
+        const query = `SELECT * FROM comments`;
+        connection.query(query, (error, results) => {
             if (error) return callback(error, null);
             return callback(null, results);
         });
@@ -81,11 +81,6 @@ class CommentModel {
     }
 
     static getRecursiveComments(parentId, id, callback) {
-        // const query = `SELECT * FROM comments WHERE parentId = ?`;
-        // connection.query(query, [parentId], (error, results) => {
-        //     if (error) return callback(error, null);
-        //     return callback(null, results);
-        // });
         const query = `
             SELECT c.*, 
                 (SELECT JSON_ARRAYAGG(
@@ -106,6 +101,14 @@ class CommentModel {
         connection.query(query, [id], (error, commentResult) => {
             if (error) return callback(error, null);
             return callback(null, { comment: commentResult});
+        });
+    }
+
+    static getUserComments(userName, callback) {
+        const query = `SELECT * FROM comments WHERE username = ?`;
+        connection.query(query, [userName], (error, results) => {
+            if (error) return callback(error, null);
+            return callback(null, results);
         });
     }
 

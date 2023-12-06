@@ -55,6 +55,14 @@ class ChannelModel{
             return callback(null, { message: "channel deleted"});
         });
     }
+
+    static getUserChannels(userName, callback) {
+        const query = `SELECT * FROM channels WHERE userName = ?`;
+        connection.query(query, [userName], (error, results) => {
+            if (error) return callback(error, null);
+            return callback(null, results);
+        });
+    }
 }
 
 module.exports = ChannelModel;

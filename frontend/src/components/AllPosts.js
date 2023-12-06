@@ -82,7 +82,9 @@ const AllPosts = () => {
       if (response.status === 200) {
         const data = await response.data;
         //console.log(data.comments[0].children);
-        setChild(JSON.parse(data.comments[0].children));
+        if (data.comments[0]){
+          setChild(JSON.parse(data.comments[0].children));
+        }
       }
     } catch (error) {
       console.error('Error fetching comments:', error);
