@@ -103,6 +103,19 @@ class PostController {
             return res.status(200).json({ posts: results });
         });
     }
+
+    static updateClass(req, res) {
+        const { userName, newClass } = req.query;
+    
+        if (!userName || !newClass) {
+            return res.status(400).json({ error: 'userName or newclass not provided' });
+          }
+    
+        PostModel.updateClass(userName, newClass, (error, users) => {
+          if (error) return res.status(500).json({ error: error });
+          return res.status(200).json({ users });
+        });
+      }
 }
 
 module.exports = PostController;

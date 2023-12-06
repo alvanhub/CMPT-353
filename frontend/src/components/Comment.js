@@ -8,7 +8,7 @@ const Comment = ({ comment, user, handleDeleteComment, handleDeleteUser, handleF
         if (!comment.children) { // Perform the request only if children are not fetched
             handleFetchChildren(setChild, oldParent, comment.id);
         }
-    }, [child, handleFetchChildren, oldParent, comment.children]);
+    }, [child, handleFetchChildren, oldParent, comment.children, comment.userClass]);
     //console.log(comment.children);
     // if (comment.children){
     //     children = JSON.parse(comment.children);
@@ -24,9 +24,8 @@ const Comment = ({ comment, user, handleDeleteComment, handleDeleteUser, handleF
 
   return (
     <div className="post-box" key={comment.id}>
-      <p>Sender: {comment.userName}</p>
-      <p>Comment ID: {comment.id}</p>
-      <p>Content: {comment.text}</p>
+      <p className="sender">{comment.userClass} {comment.userName}</p>
+      <p>{comment.text}</p>
       {comment.image && (
         <img
           src={`http://localhost:5000/uploads/${comment.image}`}

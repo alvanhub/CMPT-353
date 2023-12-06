@@ -21,12 +21,15 @@ class CommentModel {
             postId int unsigned,
             userName varchar(100) NOT NULL,  
             parentId int unsigned,
+            userClass VARCHAR(100) NOT NULL DEFAULT '',
             PRIMARY KEY (id),
             FOREIGN KEY (postId) REFERENCES posts(id),
             FOREIGN KEY (parentId) REFERENCES comments(id)
         )`;
 
         // const query = `DROP TABLE IF EXISTS comments;`
+    //     const query = `ALTER TABLE comments
+    // ADD COLUMN userClass VARCHAR(100) NOT NULL DEFAULT ''`;
 
         connection.query(query, (error, result) => {
             if (error) throw error;
@@ -111,6 +114,15 @@ class CommentModel {
             return callback(null, results);
         });
     }
+
+    static updateClass(userName, newClass, callback) {
+        const updateQuery = `UPDATE comments SET userClass = ? WHERE userName = ?`;
+      
+        connection.query(updateQuery, [newClass, userName], (error, results) => {
+          if (error) return callback(error, null);
+          return callback(null, results);
+        });
+      }
 
 
 }

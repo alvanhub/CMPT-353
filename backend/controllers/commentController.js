@@ -118,6 +118,19 @@ class CommentController {
             return res.status(200).json({ comments: results });
         });
     }
+
+    static updateClass(req, res) {
+        const { userName, newClass } = req.query;
+    
+        if (!userName || !newClass) {
+            return res.status(400).json({ error: 'userName or newclass not provided' });
+          }
+    
+        CommentModel.updateClass(userName, newClass, (error, users) => {
+          if (error) return res.status(500).json({ error: error });
+          return res.status(200).json({ users });
+        });
+      }
 }
 
 

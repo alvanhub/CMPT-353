@@ -43,6 +43,28 @@ body {
     margin-bottom: 20px;
     background-color: #333; /* Darker background for posts */
   }
+
+  .message-container {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .message {
+    background-color: #333; /* Dark background color */
+    color: #fff; /* Light text color for better readability */
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .sender {
+    font-weight: bold; /* Highlight sender's name by making it bold */
+    color: #f4f3f1; /* Customize sender's name color */
+  }
+
+  
   
   /* ... */
   

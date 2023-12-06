@@ -15,9 +15,12 @@ class UserModel {
         id INT UNSIGNED NOT NULL AUTO_INCREMENT,
         name VARCHAR(100) NOT NULL,
         password VARCHAR(100) NOT NULL,
+        class VARCHAR(100) NOT NULL DEFAULT '',
         isAdmin BOOLEAN DEFAULT FALSE,
         PRIMARY KEY (id)
       )`;
+  //     const query = `ALTER TABLE users
+  // ADD COLUMN class VARCHAR(100) NOT NULL DEFAULT ''`;
 
     //   const query = `DROP TABLE IF EXISTS users;`
   
@@ -98,6 +101,15 @@ class UserModel {
             return callback("email does not exist", null);
           }
       });
+  }
+
+  static updateClass(userId, newClass, callback) {
+    const updateQuery = `UPDATE users SET class = ? WHERE id = ?`;
+  
+    connection.query(updateQuery, [newClass, userId], (error, results) => {
+      if (error) return callback(error, null);
+      return callback(null, results);
+    });
   }
 }
 

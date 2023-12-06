@@ -15,7 +15,7 @@ const Login = () => {
       if (response.status === 200) {
         // Login successful, perform actions like redirecting or setting tokens in localStorage
         localStorage.setItem("token", JSON.stringify(response.data.users[0]));
-        console.log(response.data.users[0]);
+        //console.log(response.data.users[0]);
         window.location = "/";
         setUsername('');
         setPassword('');

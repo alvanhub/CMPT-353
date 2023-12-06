@@ -32,11 +32,14 @@ class PostModel {
             userName varchar(100) NOT NULL,
             topic varchar(250) NOT NULL,
             data varchar(250) NOT NULL,
+            userClass VARCHAR(100) NOT NULL DEFAULT '',
             image varchar(250) DEFAULT NULL,
             PRIMARY KEY (id),
             FOREIGN KEY (channel_id) REFERENCES channels(id)
         )`;
-        //const postQuery = `DROP TABLE IF EXISTS posts;`
+        // const postQuery = `DROP TABLE IF EXISTS posts;`
+//               const postQuery = `ALTER TABLE posts
+//    ADD COLUMN userClass VARCHAR(100) NOT NULL DEFAULT ''`;
 
         // Create the posts table
         connection.query(postQuery, (error, result) => {
@@ -98,6 +101,15 @@ class PostModel {
             return callback(null, results);
         });
     }
+
+    static updateClass(userName, newClass, callback) {
+        const updateQuery = `UPDATE posts SET userClass = ? WHERE userName = ?`;
+      
+        connection.query(updateQuery, [newClass, userName], (error, results) => {
+          if (error) return callback(error, null);
+          return callback(null, results);
+        });
+      }
 }
 
 module.exports = PostModel;

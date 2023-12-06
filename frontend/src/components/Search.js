@@ -19,6 +19,66 @@ const SearchPage = () => {
   const [users, setUsers] =  useState([]);
   const [selectedUser, setSelectedUser] =  useState(null);
 
+  const [basedPosts, setBasedPosts] =  useState([]);
+  const [basedChannels, setBasedChannels] =  useState([]);
+  const [basedComments, setBasedComments] =  useState([]);
+
+
+  useEffect(() => {  
+    const fetchChannels = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/getUserChannels?userName=${selectedUser.name}`);
+        if (response.status === 200) {
+          setBasedChannels(response.data.channels);
+          // if (selectedTopic == 'channels'){
+          //   setChannelResult(response.data.channels);
+          // }
+        }
+      } catch (error) {
+        console.error('Error fetching channels:', error);
+      }
+    };
+
+    fetchChannels();
+
+    const fetchPosts = async () => {
+      
+      try {
+        const response = await axios.get(`http://localhost:5000/getUserPosts?userName=${selectedUser.name}`);
+        if (response.status === 200) {
+          setBasedPosts(response.data.posts);
+        }
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+
+    fetchPosts();
+
+    const fetchMessages = async () => {
+      
+      try {
+        const response = await axios.get(`http://localhost:5000/getUserComments?userName=${selectedUser.name}`);
+        if (response.status === 200) {
+          setBasedComments(response.data.comments);
+          // if (selectedTopic == 'comments'){
+          //   setpostsResult(response.data.comments);
+          // }
+        }
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    };
+
+    //console.log(parent);
+
+    fetchMessages();
+
+
+  }, [selectedUser])
+
+
+
 
 
   useEffect(() => {  
@@ -101,9 +161,9 @@ const SearchPage = () => {
         const response = await axios.get(`http://localhost:5000/getChannels`);
         if (response.status === 200) {
           setUserChannelCount(response.data.channels);
-          // if (selectedTopic == 'channels'){
-          //   setChannelResult(response.data.channels);
-          // }
+          if (selectedTopic == 'channels'){
+            setChannelResult(response.data.channels);
+          }
         }
       } catch (error) {
         console.error('Error fetching channels:', error);
@@ -198,9 +258,9 @@ const SearchPage = () => {
         const response = await axios.get(`http://localhost:5000/getComments`);
         if (response.status === 200) {
           setUserMessageCount(response.data.comments);
-          // if (selectedTopic == 'comments'){
-          //   setpostsResult(response.data.comments);
-          // }
+          if (selectedTopic == 'comments'){
+            setCommentResult(response.data.comments);
+          }
         }
       } catch (error) {
         console.error('Error fetching comments:', error);
@@ -294,7 +354,7 @@ const SearchPage = () => {
             />
             <h2>Users</h2>
             <p>select a user to see their posted content</p>
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <div style={{display: 'flex'}}>
               <div>
                 {userResult.map((user) => (   
                 <div className="post-box" key={user.id} onClick={() => setSelectedUser(user)}>
@@ -304,8 +364,43 @@ const SearchPage = () => {
               ))}
               </div>
               {selectedUser && 
-              <div>
-                yess
+              <div style={{overflowY: 'auto', maxHeight: '450px', margin: '20px', marginLeft: 'auto', marginRight: '200px', marginTop:'0px', }}>
+                <div style={{overflowY: 'hidden'}}>
+                <h2>User Channels</h2>
+                {basedChannels.map((channel) => (   
+                  <div className="post-box" key={channel.id}> {/* Apply CSS class for post box */}
+                  {/* Render post data here */}
+                  <p>Sender: {channel.userName}</p>
+                  <p>channel ID: {channel.id}</p>
+                  <p>Topic: {channel.topic}</p>
+                  </div>
+                ))}
+                <h2>User Posts</h2>
+                {basedPosts.map((post) => (   
+                  <div className="post-box" key={post.id}> {/* Apply CSS class for post box */}
+                  {/* Render post data here */}
+                  <p>Sender: {post.userName}</p>
+                  <p>Post ID: {post.id}</p>
+                  <p>Topic: {post.topic}</p>
+                  <p>Data: {post.data}</p>
+                  {post.image && (
+                    <img src={`http://localhost:5000/uploads/${post.image}`} alt="post Image" style={{ width: '200px', height: '150px' }}/>
+                  )}
+                  </div>
+                ))}
+                <h2>User Messages</h2>
+                {basedComments.map((comment) => (   
+                  <div className="post-box" key={comment.id}> {/* Apply CSS class for comment box */}
+                  {/* Render comment data here */}
+                  <p>Sender: {comment.userName}</p>
+                  <p>comment ID: {comment.id}</p>
+                  <p>Content: {comment.text}</p>
+                  {comment.image && (
+                    <img src={`http://localhost:5000/uploads/${comment.image}`} alt="post Image" style={{ width: '200px', height: '150px' }}/>
+                  )}
+                  </div>
+                ))}
+                </div>
               </div>
               }
             </div>

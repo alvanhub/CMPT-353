@@ -31,6 +31,8 @@ app.get('/login', UserController.getUser);
 
 app.put('/removeUser', UserController.removeUser);
 
+app.put('/updateClass', UserController.updateClass);
+
 // channels
 // Initialize Database
 app.get('/initChannel', ChannelController.initializeDatabase);
@@ -65,6 +67,9 @@ app.get('/getposts', PostController.getAllPosts);
 // Get user Posts
 app.get('/getUserPosts', PostController.getUserPosts);
 
+
+app.put('/updatePostsClass', PostController.updateClass);
+
 // Get specific channel posts
 app.get('/getChannelPosts', PostController.getChannelPosts);
 
@@ -81,6 +86,8 @@ app.get('/getComments', CommentController.getAllComments);
 
 // get user comments
 app.get('/getUserComments', CommentController.getUserComments);
+
+app.put('/updateCommentsClass', CommentController.updateClass);
 
 // get child comments
 app.get('/getChildComments', CommentController.getChildrenComments);

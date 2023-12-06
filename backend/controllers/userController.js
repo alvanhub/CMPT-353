@@ -75,6 +75,20 @@ class UserController {
     });
   }
 
+  static updateClass(req, res) {
+    const { userId, newClass } = req.query;
+
+    if (!userId || !newClass) {
+        return res.status(400).json({ error: 'userId or newclass not provided' });
+      }
+
+    UserModel.updateClass(userId, newClass, (error, users) => {
+      if (error) return res.status(500).json({ error: error });
+      return res.status(200).json({ users });
+    });
+  }
+
+
   // Add methods for removing channels, posts, and replies if needed
 }
 

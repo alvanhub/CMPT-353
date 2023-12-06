@@ -158,9 +158,10 @@ const AllPosts = () => {
                 <div className='comments-container'>
                   {channels.map((channel) => (
                   <div className="post-box" key={channel.id}>
-                    <p>Sender: {channel.userName}</p>
-                    <p>Channel ID: {channel.id}</p>
-                    <p>Topic: {channel.topic}</p>
+                      <div className="message">
+                        <p className="sender">{channel.topic}</p>
+                        <p style={{color: '#aeaca8'}}>Created By {channel.userName}</p>
+                      </div>
                     {user.isAdmin ? (
                       <div>
                         <button onClick={() => handleDeleteChannel(channel.id)}>Delete Channel</button>
@@ -188,10 +189,8 @@ const AllPosts = () => {
                         
                         <div className="post-box" key={post.id}> {/* Apply CSS class for post box */}
                         {/* Render post data here */}
-                        <p>Sender: {post.userName}</p>
-                        <p>Post ID: {post.id}</p>
-                        <p>Topic: {post.topic}</p>
-                        <p>Data: {post.data}</p>
+                        <p className="sender">{post.topic} - {post.userClass} {post.userName}</p>
+                        <p>{post.data}</p>
                         {post.image && (
                           <img src={`http://localhost:5000/uploads/${post.image}`} alt="post Image" style={{ width: '200px', height: '150px' }}/>
                         )}
